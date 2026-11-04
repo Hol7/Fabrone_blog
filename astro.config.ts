@@ -1,7 +1,7 @@
 import { defineConfig, envField } from 'astro/config';
 import { loadEnv } from 'vite';
 import { editorEnabled } from './scripts/editor-policy.mjs';
-import cloudflare from '@astrojs/cloudflare';
+import vercel from '@astrojs/vercel';
 import mdx from '@astrojs/mdx';
 import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
@@ -14,7 +14,7 @@ const secret = (field: typeof envField.string | typeof envField.number) =>
   field({ context: 'server', access: 'secret', optional: true });
 
 // En développement, le site tourne sous Node (l'admin Keystatic écrit alors dans tes fichiers).
-// L'adaptateur Cloudflare n'est utilisé que pour le build de production.
+// Le build de production produit les fichiers et fonctions attendus par Vercel.
 const dev = process.argv.includes('dev');
 const configEnv = { ...loadEnv(dev ? 'development' : 'production', process.cwd(), ''), ...process.env };
 const admin = editorEnabled({ dev, env: configEnv, repo: site.repo });
@@ -23,7 +23,7 @@ export default defineConfig({
   site: site.url,
   output: 'static', // les pages sont générées à l'avance ; seuls l'admin et l'inscription tournent à la demande
   build: { format: 'file' },
-  adapter: dev ? undefined : cloudflare({ imageService: 'passthrough' }), // les images sont servies telles quelles
+  adapter: dev ? undefined : vercel(),
   integrations: [react(), mdx(), sitemap(), ...(admin ? [keystatic()] : [])],
   server: { host: "127.0.0.1" },
   markdown: {

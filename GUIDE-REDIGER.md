@@ -42,7 +42,7 @@ Dans Keystatic, ouvre **Mon profil** : nom, sous-titre, présentation, GitHub, L
 
 ## En ligne
 
-En local, les changements sont écrits sur ton ordinateur. En production, le projet utilise le stockage GitHub de Keystatic : il faut configurer ton dépôt et l’application GitHub, puis relier le déploiement Cloudflare. Voir README. Enregistrer un article ne crée pas une campagne Brevo automatiquement.
+En local, les changements sont écrits sur ton ordinateur. En production, le projet utilise le stockage GitHub de Keystatic : il faut configurer ton dépôt et l’application GitHub, puis relier le déploiement Vercel. Voir README. Enregistrer un article ne crée pas une campagne Brevo automatiquement.
 
 ## PWA
 

@@ -1,6 +1,6 @@
 # Carnet
 
-Blog en Astro, avec l'admin Keystatic, hébergé sur Cloudflare, newsletter par Brevo.
+Blog en Astro, avec l'admin Keystatic, hébergé sur Vercel, newsletter par Brevo.
 Les pages sont générées à l'avance : rapide, sans base de données, rien à maintenir.
 
 ## En local
@@ -52,11 +52,19 @@ Sans protection, quelqu'un peut inscrire l'adresse d'une autre personne en boucl
 
 `TURNSTILE_SITE_KEY` est lue au moment du build : sur Cloudflare, ajoute-la aussi dans les variables de build, pas seulement dans celles du Worker. Sans ces deux clés, le contrôle est désactivé.
 
-## Déployer sur Cloudflare
+## Déployer sur Vercel
 
-1. Mets le projet sur GitHub, puis renseigne `repo` et `url` dans `src/site.ts`.
-2. Dans Cloudflare : Workers et Pages, Create, puis importe le dépôt. Commande de build : `npm run build`. Commande de déploiement : `npx wrangler deploy`.
-3. Ajoute les variables (Brevo et Turnstile) dans les réglages du Worker.
+Le projet utilise `@astrojs/vercel` pour ses pages statiques et ses routes serveur (newsletter, admin si activé). Le résultat de build se trouve dans `.vercel/output/`. La PWA est générée dans `.vercel/output/static/`.
+
+- Framework Preset : **Astro**.
+- Root Directory : le dossier contenant `package.json` (`.` pour ce dépôt).
+- Build Command : `npm run build` (défini aussi dans `vercel.json`).
+- Output Directory : laisser le réglage automatique ; ne pas forcer `dist/client`.
+- Déploiement CLI : `vercel --prod` depuis le projet. Avec GitHub : pousser les modifications déclenche un nouveau build.
+- Variables : Vercel → Project → Settings → Environment Variables. Configurer Brevo pour Production (et Preview si souhaité), puis redéployer.
+- Domaine canonique : `src/site.ts`, actuellement `https://carnetblog.vercel.app`.
+
+`npm run dev` lance l’éditeur local. `npm run preview` utilise `vercel dev`. `npm run build` valide le véritable résultat de production. Le dossier `.vercel` et les fichiers `.env*` ne sont pas versionnés. Ne déployer ni `.env`, ni les anciens fichiers `dist/server` de Cloudflare.
 
 ### Admin en production : fermé par défaut
 
@@ -67,7 +75,7 @@ Pour activer volontairement l’éditeur en ligne :
 1. Configure le vrai dépôt dans `src/site.ts`.
 2. Lance en local `PUBLIC_KEYSTATIC_STORAGE=github npm run dev` et ouvre `/keystatic` pour configurer l’application GitHub.
 3. Ajoute dans l’app GitHub le callback `https://ton-domaine/api/keystatic/github/oauth/callback`.
-4. Configure `KEYSTATIC_GITHUB_CLIENT_ID`, `KEYSTATIC_GITHUB_CLIENT_SECRET`, `KEYSTATIC_SECRET` (au moins 32 caractères) et `PUBLIC_KEYSTATIC_GITHUB_APP_SLUG` dans l’environnement de build et dans le Worker.
+4. Configure `KEYSTATIC_GITHUB_CLIENT_ID`, `KEYSTATIC_GITHUB_CLIENT_SECRET`, `KEYSTATIC_SECRET` (au moins 32 caractères) et `PUBLIC_KEYSTATIC_GITHUB_APP_SLUG` dans l’environnement de build et dans Vercel.
 5. Ajoute `KEYSTATIC_ADMIN_ENABLED=true` au build, puis reconstruis/déploie. Une configuration incomplète fait échouer le build.
 6. Vérifie avant utilisation réelle : visite anonyme, compte sans droit d’écriture, puis ton compte autorisé. L’authentification réelle ne peut être testée qu’une fois ton application GitHub configurée.
 
@@ -77,7 +85,7 @@ Référence : https://keystatic.com/docs/github-mode
 
 ## Statistiques
 
-Active Web Analytics pour ton domaine dans Cloudflare. Elles comptent les visites ; la liste des abonnés se lit dans Brevo.
+Les statistiques de trafic peuvent être configurées dans ton hébergeur. Elles comptent les visites ; la liste des abonnés se lit dans Brevo.
 
 ## Version Fabrone
 
@@ -91,7 +99,7 @@ Pour placer plusieurs vidéos au milieu du texte en éditant le MDX, importe `Vi
 
 ### Où mettre les clés
 Copie `.env.example` en `.env`, à la racine du projet, près de `package.json`. Renseigne `BREVO_API_KEY` et `BREVO_LIST_ID`. `BREVO_DOI_TEMPLATE_ID` est facultatif. Redémarre le serveur après modification. Aucune clé Sanity n’est nécessaire.
-En production, configure ces mêmes secrets dans le Worker Cloudflare ; le fichier `.env` reste sur ton ordinateur.
+En production, configure ces mêmes secrets dans Vercel Cloudflare ; le fichier `.env` reste sur ton ordinateur.
 L’inscription à la newsletter ajoute les contacts à Brevo ; elle n’envoie pas automatiquement tes nouveaux articles. Les campagnes se préparent dans Brevo.
 
 ## Écrire, médias et profil

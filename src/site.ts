@@ -6,8 +6,8 @@ export const site = {
   bio: profile.bio,
   subtitleEn: profile.subtitleEn,
   bioEn: profile.bioEn,
-  url: 'https://carnet.example.com', // ton domaine final
-  repo: 'TON-COMPTE/carnet' as `${string}/${string}`, // dépôt GitHub, utilisé par l’admin en production
+  url: 'https://carnetblog.vercel.app', // ton domaine final
+  repo: 'Hol7/Fabrone_blog' as `${string}/${string}`, // dépôt GitHub, utilisé par l’admin en production
   about: "Programmation, cybersécurité et carnets de route. J’écris ce que j’apprends.",
   links: [
     { label: 'GitHub', href: profile.github },
