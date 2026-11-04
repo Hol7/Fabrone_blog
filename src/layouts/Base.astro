@@ -1,0 +1,129 @@
+---
+import '@fontsource-variable/bricolage-grotesque/opsz.css';
+import '@fontsource-variable/literata/opsz.css';
+import '@fontsource-variable/literata/opsz-italic.css';
+import '@fontsource-variable/geist-mono';
+import '../styles/global.css';
+import SocialLinks from '../components/SocialLinks.astro';
+import { site, rubriques } from '../site';
+
+interface Props {
+  lang?: 'fr' | 'en';
+  alternates?: { lang: string; href: string }[];
+  title?: string;
+  description?: string;
+  type?: 'website' | 'article';
+  image?: string | null;
+}
+
+const { lang = 'fr', alternates = [], title, description = site.about, type = 'website', image } = Astro.props;
+const en = lang === 'en';
+const fullTitle = title ? `${title} – ${site.name}` : site.name;
+const path = Astro.url.pathname.replace(/(\/index)?\.html$/, '') || '/';
+const canonical = new URL(path, Astro.site);
+const nav = en ? [['/en', 'Home'], ['/en/articles', 'Articles'], ['/en/about', 'About']] : [
+  ['/', 'Accueil'],
+  ['/articles', 'Articles'],
+  ['/a-propos', 'À propos'],
+  ['/rss.xml', 'RSS'],
+];
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>try { var t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {alternates.map((item) => <link rel="alternate" hreflang={item.lang} href={new URL(item.href, Astro.site)} />)}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+    <meta name="theme-color" content="#141414" />
+    <link rel="alternate" type="application/rss+xml" title={site.name} href="/rss.xml" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonical} />
+    {image && <meta property="og:image" content={image} />}
+    <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{en ? 'Skip to content' : 'Aller au contenu'}</a>
+    <div class="shell">
+      <header class="rail">
+        <div class="identity-block">
+          <a class="avatar-ring" href={en ? '/en/about' : '/a-propos'} aria-label={en ? `About ${site.name}` : `À propos de ${site.name}`}><img src="/images/avatar.svg" width="80" height="80" alt={`Avatar ${site.name}`} /></a>
+          <div class="identity-copy">
+            <a class="name" href={en ? '/en' : '/'}>{site.name}</a>
+            <p class="identity-subtitle">{en ? site.subtitleEn : site.subtitle}</p>
+            <SocialLinks lang={lang} />
+          </div>
+        </div>
+        <nav aria-label={en ? "Main navigation" : "Navigation principale"}>
+          {nav.map(([href, label]) => (
+            <a href={href} aria-current={(href === '/' || href === '/en' ? path === href || (href === '/en' && path === '/en/') : path.startsWith(href)) ? 'page' : undefined}>{label}</a>
+          ))}
+        </nav>
+        {!en && <nav class="topics" aria-label="Rubriques">
+          {Object.entries(rubriques).map(([slug, label]) => (
+            <a href={`/rubriques/${slug}`} aria-current={path === `/rubriques/${slug}` ? 'page' : undefined}>{label}</a>
+          ))}
+        </nav>}
+        <div class="header-tools"><a class="language-link" href={en ? "/articles" : "/en/articles"} lang={en ? "fr" : "en"}>{en ? "Articles en français" : "Articles in English"}</a>
+        <button class="theme" type="button" id="theme" aria-label="Activer le mode clair" aria-pressed="false">{en ? "☀ Light mode" : "☀ Mode clair"}</button></div>
+      </header>
+      <div class="col">
+        <main id="main"><slot /></main>
+        <footer><span>© {new Date().getFullYear()} {site.name}</span><a href="/rss.xml">{en ? "RSS (French) ↗" : "Flux RSS ↗"}</a><a href="/installer">{en ? "Install (French) ↓" : "Installer le blog ↓"}</a></footer>
+      </div>
+    </div>
+    <script>
+      if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch(() => {
+            const status = document.getElementById('offline-status');
+            if (status) status.textContent = 'La lecture hors ligne n’est pas disponible pour le moment.';
+          });
+        });
+      }
+      const root = document.documentElement;
+      const english = root.lang === 'en';
+      const dark = () => root.dataset.theme !== 'light';
+      const themeButton = document.getElementById('theme')!;
+      const labelTheme = () => {
+        themeButton.textContent = dark() ? (english ? '☀ Light mode' : '☀ Mode clair') : (english ? '☾ Dark mode' : '☾ Mode sombre');
+        themeButton.setAttribute('aria-label', english ? (dark() ? 'Enable light mode' : 'Enable dark mode') : (dark() ? 'Activer le mode clair' : 'Activer le mode sombre'));
+        themeButton.setAttribute('aria-pressed', String(!dark()));
+        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark() ? '#141414' : '#faf8f5');
+      };
+      labelTheme();
+      document.getElementById('theme')!.addEventListener('click', () => {
+        const next = dark() ? 'light' : 'dark';
+        root.dataset.theme = next;
+        labelTheme();
+        try { localStorage.setItem('theme', next); } catch {}
+      });
+
+      document.querySelectorAll<HTMLElement>('.prose pre').forEach((pre) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'copy';
+        button.textContent = english ? 'Copy' : 'Copier';
+        button.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(pre.querySelector('code')?.innerText ?? pre.innerText);
+            button.textContent = english ? 'Copied' : 'Copié';
+          } catch {
+            button.textContent = english ? 'Copy failed' : 'Copie impossible';
+          }
+          setTimeout(() => (button.textContent = english ? 'Copy' : 'Copier'), 1800);
+        });
+        pre.append(button);
+      });
+    </script>
+  </body>
+</html>

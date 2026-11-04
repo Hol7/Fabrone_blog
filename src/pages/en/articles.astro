@@ -1,0 +1,7 @@
+---
+import Base from '../../layouts/Base.astro';
+import PostList from '../../components/PostList.astro';
+import { getPosts } from '../../lib/posts';
+const posts = await getPosts('en');
+---
+<Base lang="en" title="Articles in English" description="English articles about programming, cybersecurity and travel."><h1 class="title">Articles in English</h1>{posts.length ? <PostList posts={posts} /> : <p>No English articles have been published yet. <a href="/articles">Read the French articles.</a></p>}</Base>

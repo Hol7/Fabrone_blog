@@ -1,0 +1,6 @@
+---
+import Base from '../../layouts/Base.astro';
+import SocialLinks from '../../components/SocialLinks.astro';
+import { site } from '../../site';
+---
+<Base lang="en" title="About" description="Software Engineer, cybersecurity enthusiast and explorer at heart."><p class="eyebrow">Behind the journal</p><h1 class="title">Hi, I’m {site.name}<span class="accent">.</span></h1><div class="prose">{site.bioEn.split(/\n\s*\n/).map((text) => <p>{text}</p>)}<h2>Let’s connect</h2><SocialLinks labels lang="en" /></div><p class="avatar-credit">Adventurer Neutral by Lisa Wischofsky, via <a href="https://www.dicebear.com/styles/adventurer-neutral/">DiceBear</a> · <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Custom background colour.</p></Base>

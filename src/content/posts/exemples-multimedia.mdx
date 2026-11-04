@@ -1,0 +1,84 @@
+---
+title: 'Mon atelier : images, GIF, audio, vidéo et code'
+description: >-
+  Un article de démonstration à ouvrir dans Keystatic pour apprendre à utiliser
+  chaque format.
+date: 2026-11-04
+category: dev
+cover: /images/posts/exemples-multimedia/demo-schema.svg
+coverAlt: 'Trois étapes : écrire, enregistrer, publier.'
+credit: Schéma créé pour ce carnet
+audio: /audio/exemples-multimedia/audio.mp3
+videoFile: /videos/exemples-multimedia/videoFile.mp4
+chartTitle: 'Exemple fictif : mes heures de pratique'
+chart:
+  - label: Code
+    value: 8
+  - label: Lecture
+    value: 4
+  - label: Expérimentation
+    value: 6
+draft: true
+---
+Ce brouillon est ton terrain d’essai. Les chiffres sont fictifs, l’audio est un son de test de deux secondes et la vidéo est une mire animée de trois secondes. Remplace-les par tes propres contenus.
+
+## Image et schéma
+
+Dans **Contenu**, utilise le bouton **Image** (ou la commande `/` puis Image), choisis ton fichier et renseigne une description. Les formats usuels sont PNG, JPG, WebP et GIF. Un graphique exporté en image s’ajoute de la même façon.
+
+![Schéma : écrire, enregistrer, publier.](/images/posts/exemples-multimedia/demo-schema.svg)
+
+## GIF animé
+
+Un GIF se place comme une image. Voici une petite animation de démonstration, sans son.
+
+![Mire animée de démonstration : formes et couleurs en mouvement.](/images/posts/exemples-multimedia/demo-animation.gif)
+
+## Audio
+
+Le lecteur au début de cet article vient du champ **Audio (facultatif)**. Clique **Choose file** dans Keystatic et choisis ton MP3. Ici, il contient un son synthétique ; ce n’est pas un enregistrement de voix.
+
+## Vidéo
+
+Le lecteur au-dessus du texte utilise le champ **Fichier vidéo (facultatif)**. Choisis un MP4 ou WebM. Pour YouTube ou Vimeo, laisse ce champ vide et colle ton URL dans **Vidéo (facultatif)**. Si les deux sont remplis, le fichier est prioritaire.
+
+## Code avec coloration
+
+Dans Contenu, ajoute un **Code block**, sélectionne le langage et colle le code. Le lecteur peut ensuite cliquer sur **Copier**.
+
+```typescript
+const saluer = (nom: string): string => {
+  return `Bienvenue sur le carnet, ${nom} !`;
+};
+
+console.log(saluer('Fabrone'));
+```
+
+## Graphique sans coder
+
+En bas de cet article, le graphique utilise les champs **Titre du graphique** et **Graphique en barres**. Ajoute une entrée par barre avec un libellé et une valeur positive ou nulle. Change une valeur dans l’éditeur, enregistre puis recharge cet article : la barre s’ajuste.
+
+Pour un schéma plus libre, exporte-le en SVG ou PNG et insère-le comme l’image ci-dessus.
+
+## GitHub et liens
+
+Sélectionne un texte dans l’éditeur et ajoute un lien, ou colle un lien Markdown comme celui-ci :
+
+[Consulter la documentation publique de GitHub](https://docs.github.com/fr)
+
+Ce lien est un exemple, pas ton profil personnel. Tu peux le remplacer par un dépôt ou un fichier de code de ton choix. Une URL de dépôt est un lien ; pour afficher le code dans l’article, copie un extrait dans un bloc de code.
+
+## Tableau et emoji
+
+| Format    | Utilisation                       |
+| --------- | --------------------------------- |
+| Image     | Illustration et capture d’écran   |
+| Audio     | Note vocale, entretien ou lecture |
+| Vidéo     | Démonstration                     |
+| Graphique | Comparaison de chiffres           |
+
+Les emoji s’insèrent directement dans ton texte : 👋 💻 🎧 🎬 📊.
+
+## Publier ton propre article
+
+Crée un nouvel article, donne-lui un titre et un résumé, puis ajoute ton contenu. Garde **Brouillon** coché pendant l’écriture. Décoche-le lorsque le texte est prêt et enregistre. En local, tu vois la modification immédiatement après rechargement ; pour le site public, il faut un nouveau déploiement (automatisable avec GitHub).

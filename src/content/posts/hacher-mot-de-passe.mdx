@@ -1,0 +1,55 @@
+---
+title: Stocker un mot de passe sans le regretter
+description: "Pourquoi on hache, pourquoi on sale, pourquoi on ralentit volontairement, avec un exemple complet en Node.js."
+date: 2026-10-14
+category: cyber
+cover: https://images.unsplash.com/photo-1774898989484-0b9becf69efb
+coverAlt: Un cadenas posé sur un clavier d'ordinateur.
+credit: Sasun Bughdaryan, Unsplash
+draft: false
+---
+
+Quand une base de données fuite, la question n'est pas de savoir si les mots de passe sont lisibles. C'est de savoir combien de temps il faut pour les retrouver. Trois choix décident de la réponse.
+
+## Hacher, jamais chiffrer
+
+Un mot de passe chiffré peut être déchiffré : il suffit de voler la clé. Un mot de passe haché ne peut pas être inversé. Pour vérifier une connexion, on hache ce que l'utilisateur tape et on compare les deux empreintes.
+
+## Saler chaque mot de passe
+
+Sans sel, deux utilisateurs qui ont le même mot de passe ont la même empreinte, et un attaquant peut utiliser des tables d'empreintes déjà calculées. Un sel, c'est une valeur aléatoire propre à chaque utilisateur, ajoutée avant le hachage.
+
+## Ralentir volontairement
+
+SHA-256 est conçu pour être rapide, ce qui est exactement ce qu'il ne faut pas ici. Une fonction comme scrypt ou Argon2 demande beaucoup de calcul et de mémoire : négligeable pour une connexion, ruineux pour un attaquant qui en essaie des milliards.
+
+```ts
+import { randomBytes, scrypt as _scrypt, timingSafeEqual } from 'node:crypto';
+import { promisify } from 'node:util';
+
+const scrypt = promisify(_scrypt);
+
+export async function hacher(motDePasse: string) {
+  const sel = randomBytes(16);
+  const empreinte = (await scrypt(motDePasse, sel, 64)) as Buffer;
+  return `${sel.toString('hex')}:${empreinte.toString('hex')}`;
+}
+
+export async function verifier(motDePasse: string, stocke: string) {
+  const [sel, attendue] = stocke.split(':');
+  const empreinte = (await scrypt(motDePasse, Buffer.from(sel, 'hex'), 64)) as Buffer;
+  return timingSafeEqual(empreinte, Buffer.from(attendue, 'hex'));
+}
+```
+
+`timingSafeEqual` compare sans révéler, par sa durée, à partir de quel octet les deux valeurs diffèrent.
+
+## En production
+
+Cet exemple montre le principe. Dans un vrai projet, utilise une bibliothèque maintenue et préfère Argon2id, la recommandation actuelle de l'OWASP. Garde aussi la valeur du sel et les paramètres de coût avec l'empreinte, pour pouvoir les augmenter plus tard.
+
+## À retenir
+
+- On hache les mots de passe, on ne les chiffre pas.
+- Un sel aléatoire par utilisateur.
+- Une fonction lente à dessein : scrypt ou Argon2id, jamais SHA-256 seul.

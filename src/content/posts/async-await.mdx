@@ -1,0 +1,60 @@
+---
+title: async/await en TypeScript, les trois pièges
+description: "Oublier un await, utiliser forEach avec une fonction asynchrone, attendre en série ce qui peut partir en parallèle : trois erreurs et leur correction."
+date: 2026-10-21
+category: dev
+cover: https://images.unsplash.com/photo-1548092372-0d1bd40894a3
+coverAlt: Un ordinateur portable ouvert, écran allumé.
+credit: Philipp Katzenberger, Unsplash
+draft: false
+---
+
+`async/await` rend le code asynchrone lisible. Il cache aussi des erreurs qui ne plantent pas : le programme tourne, mais pas comme prévu. Voici les trois que je croise le plus.
+
+## Oublier le await
+
+Sans `await`, tu récupères une promesse, pas sa valeur. Le code continue sans attendre, et l'erreur n'apparaît que plus loin.
+
+```ts
+async function chargerUtilisateur(id: string) {
+  const utilisateur = chercher(id); // oubli du await
+  console.log(utilisateur.nom); // undefined : utilisateur est une Promise
+}
+```
+
+Active la règle `@typescript-eslint/no-floating-promises` : elle signale chaque promesse laissée sans `await`.
+
+## forEach ne sait pas attendre
+
+`forEach` ignore la valeur retournée par ta fonction. Elle lance toutes les opérations et passe à la suite sans attendre aucune d'elles.
+
+```ts
+// Mauvais : "Terminé" s'affiche avant la fin des envois
+fichiers.forEach(async (f) => await envoyer(f));
+console.log('Terminé');
+
+// Bon : on attend vraiment, une opération après l'autre
+for (const f of fichiers) await envoyer(f);
+console.log('Terminé');
+```
+
+## Attendre en série ce qui peut partir en parallèle
+
+Deux appels qui ne dépendent pas l'un de l'autre n'ont aucune raison d'attendre chacun leur tour.
+
+```ts
+// Lent : la durée totale est la somme des deux
+const profil = await chargerProfil(id);
+const messages = await chargerMessages(id);
+
+// Rapide : la durée totale est celle du plus lent
+const [profil, messages] = await Promise.all([chargerProfil(id), chargerMessages(id)]);
+```
+
+Si l'une des deux promesses échoue, `Promise.all` échoue aussitôt. Pour obtenir tous les résultats même en cas d'échec, utilise `Promise.allSettled`.
+
+## À retenir
+
+- Une promesse sans `await` est presque toujours un oubli.
+- Pour une boucle avec attente, utilise `for…of`, jamais `forEach`.
+- Ce qui est indépendant se lance en parallèle avec `Promise.all`.

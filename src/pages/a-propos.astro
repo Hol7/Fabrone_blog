@@ -1,0 +1,18 @@
+---
+import Base from '../layouts/Base.astro';
+import SocialLinks from '../components/SocialLinks.astro';
+import Subscribe from '../components/Subscribe.astro';
+import { site } from '../site';
+---
+<Base title="À propos">
+  <p class="eyebrow">Derrière le carnet</p>
+  <h1 class="title">Bonjour, moi c’est {site.name}<span class="accent">.</span></h1>
+  <div class="prose">
+    {site.bio.split(/\n\s*\n/).map((paragraph) => <p>{paragraph}</p>)}
+    <h2>Échanger, partager, construire</h2>
+    <p>Une question sur un article, une idée à discuter ou un projet à partager ? Retrouve-moi ici :</p>
+    {site.links.length > 0 ? <SocialLinks labels /> : <p>Mes liens de contact seront ajoutés prochainement.</p>}
+  </div>
+  <p class="avatar-credit">Avatar « Adventurer Neutral » par Lisa Wischofsky, via <a href="https://www.dicebear.com/styles/adventurer-neutral/">DiceBear</a> · <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Couleur personnalisée.</p>
+  <Subscribe />
+</Base>

@@ -1,0 +1,12 @@
+---
+interface Props { title: string; data: { label: string; value: number }[] }
+const { title, data } = Astro.props;
+const max = Math.max(1, ...data.map((item) => item.value));
+---
+<figure class="data-chart">
+  <figcaption>{title}</figcaption>
+  <ul>{data.map((item) => <li>
+    <div class="chart-label"><span>{item.label}</span><strong>{item.value.toLocaleString('fr-FR')}</strong></div>
+    <div class="chart-track" aria-hidden="true"><span style={`width:${item.value / max * 100}%`}></span></div>
+  </li>)}</ul>
+</figure>

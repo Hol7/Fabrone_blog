@@ -1,0 +1,49 @@
+---
+title: Ce qui se passe quand tu tapes une adresse dans ton navigateur
+description: "Du nom de domaine à la page affichée : DNS, connexion, requête HTTP et réponse, avec les commandes pour l'observer toi-même."
+date: 2026-10-28
+category: dev
+cover: https://images.unsplash.com/photo-1760670399462-f5e479452c27
+coverAlt: Un écran d'ordinateur affichant du code coloré.
+credit: Vishnu Kalanad, Unsplash
+draft: false
+---
+
+Tu tapes `example.com`, tu appuies sur Entrée, et une page apparaît en une fraction de seconde. Entre les deux, quatre choses se passent, dans cet ordre.
+
+## Trouver l'adresse du serveur
+
+Un navigateur ne sait pas ce qu'est `example.com`. Il demande d'abord à un serveur DNS de traduire le nom en adresse IP, comme on cherche un numéro dans un annuaire.
+
+![Le trajet d'une adresse tapée jusqu'à la page affichée.](/images/posts/requete-http.svg "Les quatre étapes, de gauche à droite.")
+
+## Ouvrir la connexion
+
+Avec l'adresse IP, le navigateur ouvre une connexion TCP vers le serveur, puis la chiffre avec TLS. C'est ce qui affiche le cadenas à côté de l'adresse.
+
+## Envoyer la requête
+
+Une fois la connexion prête, le navigateur envoie une requête HTTP. Tu peux la reproduire toi-même depuis un terminal :
+
+```bash
+dig +short example.com
+curl -sI https://example.com
+```
+
+La première commande affiche l'adresse IP. La seconde affiche les en-têtes de la réponse : le code de statut, le type du contenu, la durée de mise en cache.
+
+## Lire la réponse
+
+Le serveur répond par du HTML. Le navigateur le lit, découvre les feuilles de style, les scripts et les images dont la page a besoin, et refait une requête pour chacun. Le même trajet en JavaScript tient en quelques lignes :
+
+```ts
+const res = await fetch('https://example.com');
+console.log(res.status, res.headers.get('content-type'));
+const html = await res.text();
+```
+
+## À retenir
+
+- Le DNS traduit un nom en adresse, une seule fois par visite ou presque grâce au cache.
+- TLS chiffre la connexion avant que la moindre donnée de la page ne circule.
+- Une page, ce sont des dizaines de requêtes. L'onglet Réseau des outils de développement les liste toutes.

@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import { editorEnabled } from './editor-policy.mjs';
+const repo = 'owner/blog';
+assert.equal(editorEnabled({ dev: true, env: {}, repo }), true);
+assert.equal(editorEnabled({ dev: false, env: {}, repo }), false);
+assert.equal(editorEnabled({ dev: false, env: { KEYSTATIC_ADMIN_ENABLED: 'false' }, repo }), false);
+assert.throws(() => editorEnabled({ dev: false, env: { KEYSTATIC_ADMIN_ENABLED: 'true' }, repo }));
+const env = { KEYSTATIC_ADMIN_ENABLED: 'true', KEYSTATIC_GITHUB_CLIENT_ID: 'test-only', KEYSTATIC_GITHUB_CLIENT_SECRET: 'test-only', KEYSTATIC_SECRET: 'x'.repeat(32), PUBLIC_KEYSTATIC_GITHUB_APP_SLUG: 'test-only' };
+assert.equal(editorEnabled({ dev: false, env, repo }), true);
+assert.throws(() => editorEnabled({ dev: false, env, repo: 'TON-COMPTE/carnet' }));
+for (const name of ['KEYSTATIC_GITHUB_CLIENT_ID', 'KEYSTATIC_GITHUB_CLIENT_SECRET', 'KEYSTATIC_SECRET', 'PUBLIC_KEYSTATIC_GITHUB_APP_SLUG']) assert.throws(() => editorEnabled({ dev: false, env: { ...env, [name]: '' }, repo }));
+assert.throws(() => editorEnabled({ dev: false, env: { ...env, KEYSTATIC_SECRET: 'short' }, repo }));
+assert.throws(() => editorEnabled({ dev: false, env: { ...env, PUBLIC_KEYSTATIC_STORAGE: 'local' }, repo }));
+console.log('Éditeur : désactivé par défaut ; configuration incomplète et stockage local refusés en production.');

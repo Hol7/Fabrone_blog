@@ -1,0 +1,15 @@
+---
+import { site } from '../site';
+interface Props { labels?: boolean; lang?: 'fr' | 'en' }
+const { labels = false, lang = 'fr' } = Astro.props;
+---
+{site.links.length > 0 && <nav class:list={['social-links', { 'with-labels': labels }]} aria-label={lang === 'en' ? 'Find me online' : 'Me retrouver'}>
+  {site.links.map((link) => <a href={link.href} rel="me" aria-label={link.label} title={link.label}>
+    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="currentColor">
+      {link.label === 'GitHub' && <path d="M12 .8a11.3 11.3 0 0 0-3.6 22c.6.1.8-.2.8-.5v-2.2c-3.2.7-3.9-1.4-3.9-1.4-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.1.1 1.8 1.2 1.8 1.2 1 1.7 2.7 1.2 3.4.9.1-.7.4-1.2.7-1.5-2.6-.3-5.2-1.3-5.2-5.6 0-1.2.4-2.2 1.1-3-.1-.3-.5-1.4.1-3 0 0 1-.3 3.1 1.2a10.7 10.7 0 0 1 5.7 0c2.2-1.5 3.1-1.2 3.1-1.2.6 1.6.2 2.7.1 3 .7.8 1.2 1.8 1.2 3 0 4.3-2.7 5.3-5.3 5.6.4.4.8 1 .8 2.1v3.3c0 .3.2.6.8.5A11.3 11.3 0 0 0 12 .8Z" />}
+      {link.label === 'LinkedIn' && <path d="M20.4 2H3.6C2.7 2 2 2.7 2 3.6v16.8c0 .9.7 1.6 1.6 1.6h16.8c.9 0 1.6-.7 1.6-1.6V3.6c0-.9-.7-1.6-1.6-1.6ZM8 19H5V9h3v10ZM6.5 7.6a1.8 1.8 0 1 1 0-3.6 1.8 1.8 0 0 1 0 3.6ZM19 19h-3v-5.4c0-1.3 0-2.9-1.8-2.9s-2.1 1.4-2.1 2.8V19h-3V9H12v1.4h.1c.4-.8 1.4-1.7 2.9-1.7 3.1 0 3.7 2 3.7 4.6V19Z" />}
+      {link.label === 'E-mail' && <g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/></g>}
+    </svg>
+    {labels && <span>{link.label}</span>}
+  </a>)}
+</nav>}

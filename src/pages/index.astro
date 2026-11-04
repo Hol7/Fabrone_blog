@@ -1,0 +1,22 @@
+---
+import Base from '../layouts/Base.astro';
+import PostList from '../components/PostList.astro';
+import Subscribe from '../components/Subscribe.astro';
+import { getPosts } from '../lib/posts';
+import { site } from '../site';
+const posts = (await getPosts('fr')).slice(0, 6);
+---
+<Base>
+  <section class="intro">
+    <p class="eyebrow">Notes, découvertes & expériences</p>
+    <h1>J’écris ce que<br />j’apprends<span class="accent">.</span></h1>
+    <p>{site.about}</p>
+    <a class="text-link" href="/a-propos">Un peu plus sur moi ↗</a>
+  </section>
+  <section aria-labelledby="recent-title">
+    <div class="section-heading"><h2 id="recent-title">Derniers articles</h2><span>Le carnet</span></div>
+    {posts.length ? <PostList posts={posts} /> : <p class="empty">Le premier article arrive bientôt.</p>}
+    {posts.length > 0 && <p class="more"><a class="text-link" href="/articles">Tous les articles →</a></p>}
+  </section>
+  <Subscribe />
+</Base>

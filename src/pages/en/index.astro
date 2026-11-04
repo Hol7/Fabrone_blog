@@ -1,0 +1,11 @@
+---
+import Base from '../../layouts/Base.astro';
+import PostList from '../../components/PostList.astro';
+import { getPosts } from '../../lib/posts';
+const posts = (await getPosts('en')).slice(0, 6);
+---
+<Base lang="en" title="Notes, discoveries & experiences" description="Programming, cybersecurity and travel. A journal of what I learn.">
+  <section class="intro"><p class="eyebrow">Notes, discoveries & experiences</p><h1>Sharing what<br />I learn<span class="accent">.</span></h1><p>Software, cybersecurity and a curiosity for the world. This is where I share what I discover along the way.</p><a class="text-link" href="/en/about">A little more about me ↗</a></section>
+  <div class="section-heading"><h2>Latest articles</h2></div>
+  {posts.length ? <PostList posts={posts} /> : <p class="empty">The first English article is on its way. <a href="/articles">Browse the French articles.</a></p>}
+</Base>

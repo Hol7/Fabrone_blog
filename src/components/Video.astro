@@ -1,0 +1,12 @@
+---
+import { parseVideo } from '../lib/video';
+interface Props { url: string; title?: string }
+const { url, title = 'Vidéo de l’article' } = Astro.props;
+const video = parseVideo(url);
+---
+{video && <figure class="article-video">
+  {video.kind === 'file'
+    ? <video controls preload="metadata" playsinline aria-label={title} src={video.src}><a href={video.src}>Télécharger la vidéo</a></video>
+    : <iframe src={video.src} title={title} loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="fullscreen; picture-in-picture" allowfullscreen></iframe>}
+</figure>}
+{!video && <p class="media-message">Cette vidéo n’est pas disponible : utilise un lien YouTube, Vimeo ou un fichier MP4/WebM en HTTPS.</p>}

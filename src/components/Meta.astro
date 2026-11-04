@@ -1,0 +1,23 @@
+---
+import { fmtDate, readingTime, type Post } from '../lib/posts';
+import { rubriques } from '../site';
+
+interface Props {
+  post: Post;
+  compact?: boolean; // dans les listes : sans le temps de lecture
+}
+
+const { post, compact = false } = Astro.props;
+const { date, category, draft, language } = post.data;
+const en = language === 'en';
+const categories: Record<string, string> = { dev: 'Programming', cyber: 'Cybersecurity', vie: 'Life & travel' };
+---
+
+<p class="meta">
+  <time datetime={date.toISOString().slice(0, 10)}>{fmtDate(date, language)}</time>
+  <a href={en ? '/en/articles' : `/rubriques/${category}`}>{en ? categories[category] : rubriques[category as keyof typeof rubriques]}</a>
+  {!compact && <span>{readingTime(post)} {en ? 'min read' : 'min de lecture'}</span>}
+  {post.data.audio && <span>Audio</span>}
+  {(post.data.video || post.data.videoFile) && <span>{en ? 'Video' : 'Vidéo'}</span>}
+  {draft && <span>{en ? 'Draft' : 'Brouillon'}</span>}
+</p>

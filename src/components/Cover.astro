@@ -1,0 +1,17 @@
+---
+import { photo, type Post } from '../lib/posts';
+
+interface Props {
+  post: Post;
+  w?: number;
+  ratio?: string;
+  eager?: boolean;
+}
+
+const { post, w = 800, ratio = '3 / 2', eager = false } = Astro.props;
+const { cover, coverAlt } = post.data;
+---
+
+<div class="cover" style={`aspect-ratio: ${ratio}`}>
+  {cover && <img src={photo(cover, w)} alt={coverAlt ?? ''} loading={eager ? 'eager' : 'lazy'} decoding="async" referrerpolicy="no-referrer" />}
+</div>

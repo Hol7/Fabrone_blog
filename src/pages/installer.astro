@@ -1,0 +1,29 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Installer le blog">
+  <h1 class="title">Le carnet, à portée de main.</h1>
+  <div class="prose">
+    <p>Ajoute ce blog à ton écran d’accueil pour le retrouver comme une application.</p>
+    <p><button id="install-app" class="action-button" hidden>Installer le blog</button></p>
+    <h2>Sur ton téléphone</h2>
+    <p>Sur iPhone ou iPad : ouvre le site dans Safari, touche Partager, puis « Sur l’écran d’accueil ». Sur Android : ouvre le menu du navigateur, puis « Installer l’application » ou « Ajouter à l’écran d’accueil ».</p>
+    <h2>Sur ordinateur</h2>
+    <p>Dans un navigateur compatible, utilise l’icône d’installation dans la barre d’adresse ou l’option d’installation du menu.</p>
+    <h2>Lire sans connexion</h2>
+    <p id="offline-status" role="status">La lecture hors ligne se prépare après le premier chargement en ligne.</p>
+    <p>Les articles déjà consultés restent accessibles sans connexion. Les vidéos, l’audio, les images externes, l’éditeur et les inscriptions à la newsletter nécessitent une connexion.</p>
+  </div>
+</Base>
+<script>
+  interface InstallEvent extends Event { prompt(): Promise<void>; userChoice: Promise<{ outcome: string }> }
+  let pending: InstallEvent | undefined;
+  const button = document.getElementById('install-app') as HTMLButtonElement;
+  window.addEventListener('beforeinstallprompt', (event) => { event.preventDefault(); pending = event as InstallEvent; button.hidden = false; });
+  button.addEventListener('click', async () => { if (!pending) return; await pending.prompt(); await pending.userChoice; pending = undefined; button.hidden = true; });
+  window.addEventListener('appinstalled', () => { button.hidden = true; });
+  const status = document.getElementById('offline-status')!;
+  if (import.meta.env.DEV) status.textContent = 'La lecture hors ligne est activée dans la version de production, pas dans l’aperçu de développement.';
+  else if ('serviceWorker' in navigator) navigator.serviceWorker.ready.then(() => { status.textContent = 'La lecture hors ligne est prête. Ouvre les articles que tu souhaites garder.'; });
+  else status.textContent = 'Ce navigateur ne permet pas la lecture hors ligne.';
+</script>

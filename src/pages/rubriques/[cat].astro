@@ -1,0 +1,17 @@
+---
+import Base from '../../layouts/Base.astro';
+import PostList from '../../components/PostList.astro';
+import { getPosts } from '../../lib/posts';
+import { rubriques } from '../../site';
+
+export const getStaticPaths = () => Object.keys(rubriques).map((cat) => ({ params: { cat } }));
+
+const { cat } = Astro.params;
+const label = rubriques[cat as keyof typeof rubriques];
+const posts = (await getPosts('fr')).filter((p) => p.data.category === cat);
+---
+
+<Base title={label} description={`Les articles de la rubrique ${label}.`}>
+  <h1 class="title">{label}</h1>
+  {posts.length > 0 ? <PostList posts={posts} /> : <p class="lede">Aucun article dans cette rubrique pour le moment.</p>}
+</Base>
