@@ -9,7 +9,8 @@ interface Props {
 }
 
 const { post, w = 800, ratio = '3 / 2', eager = false } = Astro.props;
-const { cover, coverAlt } = post.data;
+const cover = post.data.coverFile || post.data.cover;
+const { coverAlt } = post.data;
 ---
 
 <div class="cover" style={`aspect-ratio: ${ratio}`}>

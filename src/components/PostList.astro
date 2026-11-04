@@ -1,6 +1,6 @@
 ---
 import Meta from './Meta.astro';
-import type { Post } from '../lib/posts';
+import { photo, type Post } from '../lib/posts';
 
 interface Props {
   posts: Post[];
@@ -12,9 +12,15 @@ const { posts } = Astro.props;
 <ul class="grid">
   {posts.map((post) => (
     <li class="card">
+      <div class="card-copy">
       <Meta post={post} compact />
       <h2><a href={`/articles/${post.id}`}>{post.data.title}</a></h2>
       <p>{post.data.description}</p>
+      </div>
+      <a class="post-preview" href={`/articles/${post.id}`} tabindex="-1" aria-hidden="true">
+        <span>{({ dev: '{ }', cyber: '⌁', vie: '✧' })[post.data.category as 'dev' | 'cyber' | 'vie']}</span>
+        {(post.data.coverFile || post.data.cover) && <img src={photo((post.data.coverFile || post.data.cover)!, 240)} alt="" width="112" height="84" loading="lazy" decoding="async" />}
+      </a>
     </li>
   ))}
 </ul>

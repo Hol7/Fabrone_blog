@@ -42,6 +42,7 @@ export default config({
           options: Object.entries(rubriques).map(([value, label]) => ({ value, label })),
           defaultValue: 'dev',
         }),
+        coverFile: fields.image({ label: 'Photo de l’article', description: 'Miniature dans les listes et couverture dans l’article. Prioritaire sur le lien ci-dessous.', directory: 'public/images/posts', publicPath: '/images/posts/' }),
         cover: fields.text({ label: 'Image de couverture (lien)', description: 'URL HTTPS ou chemin local, par exemple /images/posts/photo.jpg.' }),
         coverAlt: fields.text({ label: "Description de l'image" }),
         credit: fields.text({ label: 'Crédit photo (ex. Prénom Nom, Unsplash)' }),

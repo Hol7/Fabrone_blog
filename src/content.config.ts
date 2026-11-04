@@ -15,6 +15,7 @@ const posts = defineCollection({
     translationKey: z.string().nullish(),
     order: z.number().int().nonnegative().default(0),
     category: z.enum(Object.keys(rubriques) as [string, ...string[]]),
+    coverFile: z.string().nullish(),
     cover: z.string().nullish(),
     coverAlt: z.string().nullish(),
     credit: z.string().nullish(),

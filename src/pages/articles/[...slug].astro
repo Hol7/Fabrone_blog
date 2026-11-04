@@ -17,7 +17,8 @@ const { post } = Astro.props;
 const en = post.data.language === 'en';
 const alternatives = post.data.translationKey?.trim() ? (await getPosts()).filter((p) => p.id !== post.id && p.data.translationKey?.trim() === post.data.translationKey?.trim() && p.data.language !== post.data.language) : [];
 const { Content, headings } = await render(post);
-const { cover, coverAlt, credit, audio } = post.data;
+const cover = post.data.coverFile || post.data.cover;
+const { coverAlt, credit, audio } = post.data;
 const toc = headings.filter((h) => h.depth === 2);
 const related = (await getPosts(post.data.language))
   .filter((p) => p.id !== post.id)

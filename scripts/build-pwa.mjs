@@ -5,7 +5,7 @@ const files = await readdir(root, { recursive: true });
 const assets = files.filter((file) => /\.(css|woff2)$/.test(file)).map((file) => `/${file}`);
 const home = await readFile(new URL('index.html', root), 'utf8');
 const scripts = [...home.matchAll(/src="(\/_astro\/[^"?]+\.js)"/g)].map((match) => match[1]);
-const precache = ['/', '/offline', '/manifest.webmanifest', '/icons/icon-192.png', '/icons/icon-512.png', ...assets, ...scripts];
+const precache = ['/', ...files.filter((file) => file.startsWith('images/avatars/') && file.endsWith('.svg')).map((file) => '/' + file), '/offline', '/manifest.webmanifest', '/icons/icon-192.png', '/icons/icon-512.png', ...assets, ...scripts];
 const template = await readFile(new URL('sw-template.js', import.meta.url), 'utf8');
 // Toute modification du build renouvelle le cache (y compris le contenu des articles).
 const digest = createHash('sha256').update(template);
