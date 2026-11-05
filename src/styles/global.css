@@ -847,3 +847,25 @@ button.avatar-ring:hover img { transform: rotate(-4deg); }
 .post .prose, .post .lede { font-size: 17px; line-height: 1.65; }
 .post .prose h2 { font-size: 1.2em; }
 .post .prose h3 { font-size: 1.08em; }
+
+/* Light-mode reading typography, matching the supplied reference. */
+:root[data-theme='light'] :is(.prose, .lede, .intro > p:not(.eyebrow), .card-copy > p:last-child, .subscribe .pitch) {
+    font-family: 'Inter Variable', sans-serif;
+    font-size: 16px;
+    line-height: 28px;
+    letter-spacing: 0;
+    color: #363636b3;
+}
+
+:root[data-theme='light'] .prose blockquote {
+    color: inherit;
+}
+
+:root[data-theme='light'] .prose :is(h2, h3) {
+    color: var(--ink);
+}
+
+/* Shared heading typeface in both themes. */
+html body :is(h1, h2, h3, h4, h5, h6) {
+    font-family: 'Inter Tight Variable', sans-serif;
+}
