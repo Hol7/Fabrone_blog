@@ -869,3 +869,18 @@ button.avatar-ring:hover img { transform: rotate(-4deg); }
 html body :is(h1, h2, h3, h4, h5, h6) {
     font-family: 'Inter Tight Variable', sans-serif;
 }
+
+.back-to-articles {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    min-height: 44px;
+    margin-bottom: 1.5rem;
+    color: var(--mute);
+    font: 400 .875rem/1.5 'Inter Variable', sans-serif;
+    text-decoration: none;
+}
+
+.back-to-articles:hover {
+    color: var(--accent);
+}
