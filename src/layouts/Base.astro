@@ -98,7 +98,7 @@ const nav = en ? [['/en', 'Home'], ['/en/articles', 'Articles'], ['/en/about', '
       </header>
       <div class="col">
         <main id="main"><slot /></main>
-        <footer><span>© {new Date().getFullYear()} {site.name}</span><a href="/rss.xml">{en ? "RSS (French) ↗" : "Flux RSS ↗"}</a><a href="/installer">{en ? "Install (French) ↓" : "Installer le blog ↓"}</a></footer>
+        <footer><span hidden id="visitor-count"></span><span>© {new Date().getFullYear()} {site.name}</span><a href="/rss.xml">{en ? "RSS (French) ↗" : "Flux RSS ↗"}</a><a href="/installer">{en ? "Install (French) ↓" : "Installer le blog ↓"}</a></footer>
       </div>
     </div>
     <script>
@@ -110,6 +110,8 @@ const nav = en ? [['/en', 'Home'], ['/en/articles', 'Articles'], ['/en/about', '
           });
         });
       }
+      import { initStats } from '../lib/client-stats';
+      void initStats();
       const root = document.documentElement;
       const english = root.lang === 'en';
       const dark = () => root.dataset.theme !== 'light';

@@ -884,3 +884,24 @@ html body :is(h1, h2, h3, h4, h5, h6) {
 .back-to-articles:hover {
     color: var(--accent);
 }
+
+#article-stats:not([hidden]) {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+    color: var(--mute);
+    font: .85rem var(--sans);
+}
+#article-like {
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    background: var(--bg);
+    color: inherit;
+    padding: .5rem .75rem;
+}
+#article-like[aria-pressed='true'] {
+    border-color: var(--accent);
+    color: var(--accent);
+}

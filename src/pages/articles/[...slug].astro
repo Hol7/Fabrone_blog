@@ -39,6 +39,13 @@ const related = (await getPosts(post.data.language))
       <h1 class="title">{post.data.title}</h1>
       <p class="lede">{post.data.description}</p>
       <Meta post={post} />
+      <div id="article-stats" data-slug={post.id} hidden>
+        <span id="view-count"></span>
+        <button type="button" id="article-like" aria-pressed="false">
+          <span aria-hidden="true">♥</span> {en ? 'Like' : 'J’aime'} · <span id="like-count"></span>
+        </button>
+        <span role="status" id="stats-error"></span>
+      </div>
       {audio && <audio controls preload="none" src={audio}></audio>}
     </header>
     {cover && (
